@@ -7,31 +7,42 @@ using UnityEngine.SceneManagement;
 
 public class itemCollector : MonoBehaviour
 {
+    bool stop = false;
+    public AudioSource audioSource;
+    public AudioClip clip;
+    public float volume;
+    public bool isLocked = true;
     public int itemsCollected, itemInLevel;
-    public TMP_Text itemHUD;
     // Start is called before the first frame update
     void Start()
     {
-        itemHUD.text = $"Mushrooms:{itemsCollected}/{itemInLevel}";
+        audioSource = GetComponent<AudioSource>();
     }
-
-    public void itemCollect()
+    void Update()
     {
-        itemsCollected++;
-        itemHUD.text = $"Mushrooms:{itemsCollected}/{itemInLevel}";
-
-        if (itemsCollected >= itemInLevel)
+        if (itemsCollected == 3)
         {
-            //change scene
-            StartCoroutine(GameOver());
-
+            isLocked = false;
+            if(stop == false)
+            {
+                audioSource.PlayOneShot(clip, volume);
+                stop = true;
+            }
         }
     }
 
-    IEnumerator GameOver()
+    public void OnCollisionEnter(Collision other)
     {
-        itemHUD.text = $"You collected all the Mushrooms!";
-        yield return new WaitForSeconds(3);
-        SceneManager.LoadScene(0);
+        if ((other.gameObject.CompareTag("Player")) && (isLocked == false))
+        {
+            SceneManager.LoadScene(1);
+        }
     }
+    public void itemCollect()
+    {
+        itemsCollected++;
+
+    }
+
+
 }
