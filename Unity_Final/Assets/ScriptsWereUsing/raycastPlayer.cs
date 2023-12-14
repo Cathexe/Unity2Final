@@ -9,17 +9,14 @@ public class raycastPlayer : MonoBehaviour
     bool holdingItem = false;
     GameObject heldObj;
 
-    public bool redBox = false;
-    public bool blueBox = false;
-    public bool purpleBox = false;
-    public bool yellowBox = false;
+    public bool item1 = false;
+    public bool item2 = false;
+    public bool item3 = false;
+    public bool item4 = false;
 
-    public GameObject doorButton;
-    public Animator leftDoor;
-    public Animator rightDoor;
+    public Animator door;
     bool doorUnlocked = false;
     MeshRenderer hitOBJ;
-    public GameObject messageBox;
 
 
     // Start is called before the first frame update
@@ -33,14 +30,12 @@ public class raycastPlayer : MonoBehaviour
     {
         Debug.DrawRay(transform.position, transform.forward *raycastDistance, Color.yellow);
 
-        if(redBox&&blueBox&&purpleBox&&yellowBox)
+        if(item1 && item2 && item3 && item4)
         {
-            doorButton.GetComponent<Renderer>().material.color = Color.green;
             doorUnlocked = true;
         }
         else
         {
-            doorButton.GetComponent<Renderer>().material.color = Color.red;
             doorUnlocked = false;
         }
 
@@ -53,11 +48,10 @@ public class raycastPlayer : MonoBehaviour
                 hitOBJ = hit.collider.GetComponent<MeshRenderer>();
                 hitOBJ.materials[1].SetFloat("_Scale", 1.03f);
             }
-            if(hit.collider.tag == "DoorButton" && doorUnlocked)
+            if(doorUnlocked)
             {
                 hitOBJ = hit.collider.GetComponent<MeshRenderer>();
                 hitOBJ.materials[1].SetFloat("_Scale", 1.03f);
-                messageBox.SetActive(true);
             }
         }
         else
@@ -66,10 +60,7 @@ public class raycastPlayer : MonoBehaviour
             {
                 hitOBJ.materials[1].SetFloat("_Scale", 1.0f);
                 hitOBJ = null;
-                if(messageBox.activeSelf)
-                {
-                    messageBox.SetActive(false);
-                }
+                
             }
         }
 
@@ -84,7 +75,7 @@ public class raycastPlayer : MonoBehaviour
             if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance))
             {
                 Debug.Log(hit.collider.gameObject.name);
-                if (hit.collider.CompareTag("PickupItem"))
+                if (hit.collider.CompareTag("pickupItem"))
                 {
                    // hit.collider.GetComponent<PickupOBJ>().Pickup();
                     heldObj = hit.collider.gameObject;
@@ -114,10 +105,9 @@ public class raycastPlayer : MonoBehaviour
 
             if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance))
             {
-                if (hit.collider.CompareTag("DoorButton") && doorUnlocked)
+                if (doorUnlocked)
                 {
-                    leftDoor.SetTrigger("OpenDoor");
-                    rightDoor.SetTrigger("OpenDoor");
+                    door.SetTrigger("OpenDoor");
                 }
 
             }
